@@ -31,7 +31,10 @@ async def read_csv(file: UploadFile):
 
 @app.get("/")
 async def get_csv_collection():
-    return collection.find({}, {"_id": False})
+    items = [item async for item in collection.find({}, {"_id": False})]
+    resp_body = jsonable_encoder(items)
+    return JSONResponse(status_code=202, content=resp_body)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
